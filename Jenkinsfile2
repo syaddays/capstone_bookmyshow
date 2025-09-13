@@ -1,5 +1,3 @@
-(with K8S Stage)
-
 pipeline {
     agent any
 
@@ -65,11 +63,6 @@ pipeline {
             }
         }
 
-        stage('Trivy FS Scan') {
-            steps {
-                sh 'trivy fs . > trivyfs.txt'
-            }
-        }
 
         stage('Docker Build & Push') {
             steps {
@@ -114,14 +107,18 @@ pipeline {
     }
 
     post {
-        always {
-            emailext attachLog: true,
-                subject: "'${currentBuild.result}'",
-                body: "Project: ${env.JOB_NAME}<br/>" +
-                      "Build Number: ${env.BUILD_NUMBER}<br/>" +
-                      "URL: ${env.BUILD_URL}<br/>",
-                to: 'syadabduldg@gmail.com',
-                attachmentsPattern: 'trivyfs.txt'
-        }
+    always {
+        emailext(
+            attachLog: true,
+            subject: "Build: ${currentBuild.result} - ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+            body: """
+                <b>Project:</b> ${env.JOB_NAME}<br/>
+                <b>Build Number:</b> ${env.BUILD_NUMBER}<br/>
+                <b>Result:</b> ${currentBuild.result}<br/>
+                <b>URL:</b> <a href="${env.BUILD_URL}">${env.BUILD_URL}</a><br/>
+            """,
+            to: 'syadabduldg@gmail.com'
+        )
     }
+}
 }
