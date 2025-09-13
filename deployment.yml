@@ -1,21 +1,30 @@
+# Kubernetes Deployment for my Book-My-Show Clone
+
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: bms-app
+  # A unique name for my deployment
+  name: syad-bms-deployment
   labels:
-    app: bms
+    # A custom label to identify my app's components
+    app: syad-bms-app
 spec:
+  # Running 2 replicas to ensure the app is always available
   replicas: 2
   selector:
     matchLabels:
-      app: bms
+      # This connects the Deployment to the Pods it manages
+      app: syad-bms-app
   template:
     metadata:
       labels:
-        app: bms
+        # This label is applied to my Pods, matching the selector above
+        app: syad-bms-app
     spec:
       containers:
-      - name: bms-container
-        image: kastrov/bms:latest  # Replace with your Docker image
+      - name: syad-bms-container
+        # This is my personal Docker image built by the Jenkins pipeline
+        image: syaddevops/bms:latest
         ports:
-        - containerPort: 3000  # Replace with the port your app runs on
+        # The port my Node.js application is listening on inside the container
+        - containerPort: 3000
