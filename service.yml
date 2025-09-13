@@ -1,13 +1,23 @@
+# Kubernetes Service for my Book-My-Show Clone
+
 apiVersion: v1
 kind: Service
 metadata:
-  name: bms-service
+  # A unique name for my service endpoint
+  name: syad-bms-service
   labels:
-    app: bms
+    # Using the same label as my deployment for consistency
+    app: syad-bms-app
 spec:
+  # Using a LoadBalancer to expose my app to the internet.
+  # This tells AWS to create an Elastic Load Balancer for me.
   type: LoadBalancer
   ports:
+  # The Load Balancer will accept traffic on this port.
   - port: 80
-    targetPort: 3000  # Replace with the port your app runs on
+    # It will forward that traffic to my container's port.
+    targetPort: 3000
   selector:
-    app: bms
+    # This is how the service finds my pods.
+    # It must exactly match the labels on my deployment's pods.
+    app: syad-bms-app
